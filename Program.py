@@ -168,20 +168,27 @@ for i in array:
 print ("\n\n")    
 
 #Searching
-for img in glob.glob(dir+"/search/*.jpeg") :
-    img=cv2.imread(img)
-    
+res2 = None  # Initialize res2
+for img_path in glob.glob(dir+"/Search_Image/*.jpeg") :
+    img=cv2.imread(img_path)
+    if img is None:
+        print(f"Failed to load image: {img_path}")
+        continue
     number_plate=number_plate_detection(img)
-    res2 = str("".join(re.split("[^a-zA-Z0-9]*", number_plate)))
+    if number_plate is not None:
+        res2 = str("".join(re.split("[^a-zA-Z0-9]*", number_plate)))
+    else:
+        print(f"No number plate detected in search image: {img_path}")
 
-print("The car number to search is:- ",res2)
-    
+if res2 is not None:
+    print("The car number to search is:- ",res2)
+    result = binarySearch(array,0,len(array)-1,res2)
+    if result != -1: 
+        print ("\n\nThe Vehicle is allowed to visit." ) 
+    else: 
+        print ("\n\nThe Vehicle is  not allowed to visit.")
+else:
+    print("No search image found in the Search_Image folder or no number plate detected.")
 
-result = binarySearch(array,0,len(array)-1,res2)
-if result != -1: 
-	print ("\n\nThe Vehicle is allowed to visit." ) 
-else: 
-    print ("\n\nThe Vehicle is  not allowed to visit.")
-        
 
-    			
+
